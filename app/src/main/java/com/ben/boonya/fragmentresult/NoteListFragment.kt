@@ -15,6 +15,18 @@ class NoteListFragment : Fragment() {
 
     private val adapter: NoteRecyclerAdapter by lazy { NoteRecyclerAdapter() }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setFragmentResultListener(
+            ADD_NOTE
+        ) { _, result ->
+            result.getString(NOTE)?.let { note ->
+                adapter.addItem(note)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,14 +42,6 @@ class NoteListFragment : Fragment() {
         binding.addNoteFab.setOnClickListener {
             navigateToAddNote()
         }
-
-        setFragmentResultListener(
-            ADD_NOTE
-        ) { _, result ->
-            result.getString(NOTE)?.let { note ->
-                adapter.addItem(note)
-            }
-        }
     }
 
     private fun navigateToAddNote() {
@@ -49,6 +53,5 @@ class NoteListFragment : Fragment() {
         const val ADD_NOTE = "add_note"
 
         const val NOTE = "note"
-
     }
 }
