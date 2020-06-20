@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.ben.boonya.fragmentresult.databinding.FragmentNoteListBinding
 
@@ -15,18 +15,6 @@ class NoteListFragment : Fragment() {
 
     private val adapter: NoteRecyclerAdapter by lazy { NoteRecyclerAdapter() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setFragmentResultListener(
-            ADD_NOTE
-        ) { _, result ->
-            result.getString(NOTE)?.let { note ->
-                adapter.addItem(note)
-            }
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +23,15 @@ class NoteListFragment : Fragment() {
         binding = FragmentNoteListBinding.inflate(layoutInflater)
         binding.adapter = adapter
         return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(
+            ADD_NOTE
+        )?.observe(viewLifecycleOwner, Observer { note ->
+            adapter.addItem(note)
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

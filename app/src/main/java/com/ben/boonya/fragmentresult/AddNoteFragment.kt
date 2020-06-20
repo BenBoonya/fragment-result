@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.ben.boonya.fragmentresult.databinding.FragmentAddNoteBinding
 
@@ -32,11 +30,12 @@ class AddNoteFragment : Fragment() {
     }
 
     private fun navigateBack() {
-        setFragmentResult(
-            NoteListFragment.ADD_NOTE, bundleOf(
-                NoteListFragment.NOTE to binding.editText.text.toString()
-            )
+
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            NoteListFragment.ADD_NOTE,
+            binding.editText.text.toString()
         )
+
         findNavController().popBackStack()
     }
 }
